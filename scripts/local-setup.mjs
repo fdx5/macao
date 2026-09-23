@@ -13,7 +13,7 @@ try {
   }
   await writeFile(
     ".env",
-    `PORT=3001\nFAMILY_ACCESS_CODE=${code}\nSESSION_SECRET=${randomBytes(32).toString("hex")}\nDATA_DIR=./storage\nSITE_URL=http://localhost:3001\n`,
+    `PORT=3001\nFAMILY_ACCESS_CODE=${code}\nSESSION_SECRET=${randomBytes(32).toString("hex")}\nSITE_URL=http://localhost:3001\n`,
     { mode: 0o600 },
   );
 }

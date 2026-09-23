@@ -1,11 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile, writeFile, mkdtemp } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import path from "node:path";
+import { readFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import sharp from "sharp";
 import {
   dayEvents,
   tripState,
@@ -97,8 +94,7 @@ test("flight endpoints display each airport local time without inferring flight 
   assert.equal(timeLabel(flights[1]), "16:10");
   assert.equal(timeLabel(flights[1], true), "22:45");
 });
-test("authentication, immutable records, validated uploads, concurrent writes and restart persistence", async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), "macao-test-"));
+test("authentication, immutable records, no uploads and session survival after restart", async () => {
   const port = 3198;
   const base = `http://127.0.0.1:${port}`;
   let proc: ReturnType<typeof spawn>;
@@ -106,11 +102,10 @@ test("authentication, immutable records, validated uploads, concurrent writes an
     proc = spawn(process.execPath, ["server/index.mjs"], {
       env: {
         ...process.env,
-        NODE_ENV: "development",
+        NODE_ENV: "production",
         PORT: String(port),
         FAMILY_ACCESS_CODE: "test-family-code",
         SESSION_SECRET: "test-session-secret-only",
-        DATA_DIR: directory,
         SITE_URL: base,
       },
       stdio: ["ignore", "pipe", "pipe"],
@@ -164,47 +159,15 @@ test("authentication, immutable records, validated uploads, concurrent writes an
     );
     assert.equal(
       (
-        await fetch(base + "/api/profiles/migyun/photo", {
-          method: "DELETE",
+        await fetch(base + "/api/logout", {
+          method: "POST",
           headers: { ...headers, Origin: "https://evil.example" },
         })
       ).status,
       403,
     );
-    const png = await sharp({
-      create: { width: 64, height: 64, channels: 3, background: "#214e43" },
-    })
-      .png()
-      .toBuffer();
-    function form(bytes: Buffer, name = "avatar.png", type = "image/png") {
-      const f = new FormData();
-      f.append("photo", new Blob([new Uint8Array(bytes)], { type }), name);
-      return f;
-    }
-    const bad = await fetch(base + "/api/profiles/migyun/photo", {
-      method: "POST",
-      headers,
-      body: form(Buffer.from("fake-image")),
-    });
-    assert.equal(bad.status, 400);
     assert.equal(
-      (
-        await fetch(base + "/api/profiles/migyun/photo", {
-          method: "POST",
-          headers,
-          body: form(Buffer.alloc(6 * 1024 * 1024)),
-        })
-      ).status,
-      400,
-    );
-    assert.equal(
-      (
-        await fetch(base + "/api/profiles/unknown/photo", {
-          method: "POST",
-          headers,
-          body: form(png),
-        })
-      ).status,
+      (await fetch(base + "/api/profiles", { headers })).status,
       404,
     );
     assert.equal(
@@ -212,65 +175,20 @@ test("authentication, immutable records, validated uploads, concurrent writes an
         await fetch(base + "/api/profiles/migyun/photo", {
           method: "POST",
           headers,
-          body: form(png, "bad.svg", "image/svg+xml"),
         })
       ).status,
-      400,
+      404,
     );
-    const results = await Promise.all(
-      ["migyun", "taeil"].map((id) =>
-        fetch(base + `/api/profiles/${id}/photo`, {
-          method: "POST",
-          headers,
-          body: form(png),
-        }),
-      ),
+    assert.equal(
+      (await fetch(base + "/uploads/migyun.webp", { headers })).status,
+      404,
     );
-    for (const r of results) assert.equal(r.status, 200);
-    const saved = await (
-      await fetch(base + "/api/profiles", { headers })
-    ).json();
-    assert(saved.migyun.photo && saved.taeil.photo);
-    assert.equal((await fetch(base + saved.migyun.photo)).status, 401);
-    const photo = await fetch(base + saved.migyun.photo, { headers });
-    const metadata = await sharp(
-      Buffer.from(await photo.arrayBuffer()),
-    ).metadata();
-    assert.equal(metadata.width, 512);
-    assert.equal(metadata.format, "webp");
-    assert(!metadata.exif);
     await stop();
     await start();
     assert.deepEqual(
-      await (await fetch(base + "/api/profiles", { headers })).json(),
-      saved,
+      await (await fetch(base + "/api/trip", { headers })).json(),
+      trip,
     );
-    const backup = JSON.parse(
-      await readFile(path.join(directory, "profiles.json.bak"), "utf8"),
-    );
-    await writeFile(path.join(directory, "profiles.json"), "{broken");
-    assert.deepEqual(
-      await (await fetch(base + "/api/profiles", { headers })).json(),
-      backup,
-    );
-    await writeFile(
-      path.join(directory, "profiles.json"),
-      JSON.stringify(saved),
-    );
-    assert.equal(
-      (
-        await fetch(base + "/api/profiles/migyun/photo", {
-          method: "DELETE",
-          headers,
-        })
-      ).status,
-      200,
-    );
-    const reset = await (
-      await fetch(base + "/api/profiles", { headers })
-    ).json();
-    assert(!reset.migyun);
-    assert(reset.taeil);
   } finally {
     await stop();
   }

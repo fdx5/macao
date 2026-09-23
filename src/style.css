@@ -2041,59 +2041,11 @@ details a {
   margin: 0;
   text-align: right;
 }
-.profile-photo-controls {
-  border-top: 1px solid var(--line);
-  padding-top: 28px;
-  margin-top: 28px;
-}
-.profile-photo-controls > p {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 12px 0 20px;
-}
-.file-button {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-.file-button input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 100%;
-}
 .profile-actions {
   margin-top: 28px;
   display: flex;
   justify-content: space-between;
   gap: 20px;
-}
-.crop-editor {
-  margin-top: 25px;
-  background: var(--tint);
-  padding: 20px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-.crop-editor canvas {
-  width: 220px;
-  max-width: 100%;
-  height: auto;
-  border-radius: 50%;
-}
-.crop-editor label {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  font-size: 13px;
-}
-.crop-editor input {
-  padding: 0;
-  max-width: 190px;
 }
 .modal-backdrop {
   position: fixed;
@@ -3635,9 +3587,6 @@ details a {
   .profile-content > .subtle {
     font-size: 11px !important;
   }
-  .profile-photo-controls > p {
-    font-size: 13px;
-  }
   .profile-actions {
     flex-wrap: wrap;
     gap: 5px 15px;
@@ -3846,10 +3795,6 @@ details a {
   }
   .map-controls label {
     min-width: 120px;
-  }
-  .profile-photo-controls .button-row .small {
-    font-size: 11px;
-    padding: 10px;
   }
 }
 /* Readable travel instructions and comfortable touch targets. */

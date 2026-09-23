@@ -26,10 +26,8 @@
     "express-rate-limit": "^8.7.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.47.0",
-    "multer": "^2.4.0",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "sharp": "^0.35.4"
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
@@ -39,6 +37,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "prettier": "^3.9.9",
+    "sharp": "^0.35.4",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.0"

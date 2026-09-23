@@ -1,26 +1,11 @@
 import type { Traveler } from "./types";
-import { useState } from "react";
 export default function Avatar({
   person,
-  photo,
   size = 56,
 }: {
   person: Traveler;
-  photo?: string;
   size?: number;
 }) {
-  const [failed, setFailed] = useState("");
-  if (photo && failed !== photo)
-    return (
-      <img
-        className="avatar"
-        width={size}
-        height={size}
-        src={photo}
-        alt={`${person.name} 프로필`}
-        onError={() => setFailed(photo)}
-      />
-    );
   const a = person.animal;
   const fur =
     a === "fox"

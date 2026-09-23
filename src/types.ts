@@ -103,4 +103,3 @@ export type Trip = {
   }[];
   hotel: { name: string; checkIn: string; checkOut: string; note: string };
 };
-export type Profiles = Record<string, { photo: string; updatedAt: string }>;

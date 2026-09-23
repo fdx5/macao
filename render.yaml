@@ -2,7 +2,7 @@ services:
   - type: web
     name: our-macao
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
@@ -17,9 +17,3 @@ services:
         generateValue: true
       - key: SITE_URL
         sync: false
-      - key: DATA_DIR
-        value: /var/data/macao
-    disk:
-      name: family-profiles
-      mountPath: /var/data
-      sizeGB: 1

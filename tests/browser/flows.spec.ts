@@ -67,7 +67,7 @@ test("B team return and A team remaining itinerary", async ({ page }) => {
     page.getByRole("button", { name: "추억을 안고, 인천으로" }),
   ).toBeVisible();
 });
-test("checklist, time simulation, photo crop upload and reset", async ({
+test("checklist, time simulation, default animal profile", async ({
   page,
 }, info) => {
   await enter(page);
@@ -81,17 +81,12 @@ test("checklist, time simulation, photo crop upload and reset", async ({
     "실제 현재 시간이 아닙니다",
   );
   await page.locator(".user-button").click();
-  await page
-    .getByLabel("프로필 사진 선택")
-    .setInputFiles("public/apple-touch-icon.png");
-  await expect(page.locator(".crop-editor canvas")).toBeVisible();
-  await page.getByRole("button", { name: "이 사진으로 저장" }).click();
-  await expect(page.locator(".profile-identity img")).toBeVisible();
+  await expect(page.locator(".profile-identity svg.avatar")).toBeVisible();
+  await expect(page.locator('input[type="file"]')).toHaveCount(0);
   await page.screenshot({
     path: `test-results/${info.project.name}-profile.png`,
     fullPage: true,
   });
-  await page.getByRole("button", { name: "기본 동물로 복원" }).click();
   await expect(page.locator(".profile-identity svg.avatar")).toBeVisible();
 });
 test("map with geolocation failure keeps external navigation available", async ({

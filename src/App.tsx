@@ -29,8 +29,6 @@ import {
   ShieldCheck,
   LockKeyhole,
   X,
-  Camera,
-  RotateCcw,
   Copy,
   ExternalLink,
   CheckCircle2,
@@ -44,7 +42,7 @@ import {
   CloudRain,
   Download,
 } from "lucide-react";
-import type { Trip, Traveler, Profiles, Place, Team, Event } from "./types";
+import type { Trip, Traveler, Place, Team, Event } from "./types";
 import {
   clock,
   macauDate,
@@ -234,7 +232,6 @@ function Modal({
 
 export default function App() {
   const [trip, setTrip] = useState<Trip>(),
-    [profiles, setProfiles] = useState<Profiles>({}),
     [auth, setAuth] = useState<boolean | null>(null),
     [userId, setUserId] = useState(
       () => localStorage.getItem("macao-traveler") || "",
@@ -279,11 +276,8 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (auth) {
-      Promise.all([api<Trip>("/api/trip"), api<Profiles>("/api/profiles")])
-        .then(([t, p]) => {
-          setTrip(t);
-          setProfiles(p);
-        })
+      api<Trip>("/api/trip")
+        .then(setTrip)
         .catch((e) => setError(e.message));
     }
   }, [auth]);
@@ -390,11 +384,7 @@ export default function App() {
                       key={p.id}
                       onClick={() => choose(p)}
                     >
-                      <Avatar
-                        person={p}
-                        photo={profiles[p.id]?.photo}
-                        size={72}
-                      />
+                      <Avatar person={p} size={72} />
                       <strong>{p.name}</strong>
                       <Pill tone={p.team === "B" ? "clay" : ""}>
                         {p.team}팀
@@ -518,11 +508,7 @@ export default function App() {
             {night ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           <button className="user-button" onClick={() => go("profile")}>
-            <Avatar
-              person={traveler}
-              photo={profiles[traveler.id]?.photo}
-              size={36}
-            />
+            <Avatar person={traveler} size={36} />
             <span>
               {traveler.name}
               <small>{team}팀 여행자</small>
@@ -656,12 +642,7 @@ export default function App() {
                     <div className="hero-bottom">
                       <div className="avatar-stack">
                         {trip.travelers.map((p) => (
-                          <Avatar
-                            key={p.id}
-                            person={p}
-                            photo={profiles[p.id]?.photo}
-                            size={32}
-                          />
+                          <Avatar key={p.id} person={p} size={32} />
                         ))}
                       </div>
                       <span>다섯이 함께 쓰는 여행 이야기</span>
@@ -1075,15 +1056,12 @@ export default function App() {
         {page === "profile" && (
           <ProfilePage
             traveler={traveler}
-            profiles={profiles}
-            update={async () => setProfiles(await api("/api/profiles"))}
             onSwitch={() => setChoosing(true)}
             onLogout={async () => {
               await api("/api/logout", { method: "POST" });
               setAuth(false);
               setTrip(undefined);
             }}
-            announce={announce}
           />
         )}
         <footer className="footer">
@@ -1812,109 +1790,14 @@ function InfoPage({
 
 function ProfilePage({
   traveler: p,
-  profiles,
-  update,
   onSwitch,
   onLogout,
-  announce,
 }: {
   traveler: Traveler;
-  profiles: Profiles;
-  update: () => Promise<void>;
   onSwitch: () => void;
   onLogout: () => Promise<void>;
-  announce: (s: string) => void;
 }) {
-  const [preview, setPreview] = useState(""),
-    [zoom, setZoom] = useState(1),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
-  const canvas = useRef<HTMLCanvasElement>(null),
-    image = useRef<HTMLImageElement | null>(null);
-  useEffect(
-    () => () => {
-      if (preview) URL.revokeObjectURL(preview);
-    },
-    [preview],
-  );
-  useEffect(() => {
-    if (!preview) return;
-    const picture = new Image();
-    picture.onload = () => {
-      image.current = picture;
-      draw(picture);
-    };
-    picture.src = preview;
-    function draw(im: HTMLImageElement) {
-      const ctx = canvas.current?.getContext("2d");
-      if (!ctx) return;
-      const side = Math.min(im.width, im.height) / zoom;
-      ctx.clearRect(0, 0, 512, 512);
-      ctx.drawImage(
-        im,
-        (im.width - side) / 2,
-        (im.height - side) / 2,
-        side,
-        side,
-        0,
-        0,
-        512,
-        512,
-      );
-    }
-    if (image.current?.src === preview) draw(image.current);
-  }, [preview, zoom]);
-  function choose(file?: File) {
-    setError("");
-    if (!file) return;
-    if (
-      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
-      file.size > 5 * 1024 * 1024
-    ) {
-      setError("5MB 이하의 JPG, PNG, WebP 사진을 선택해 주세요.");
-      return;
-    }
-    setPreview(URL.createObjectURL(file));
-    setZoom(1);
-  }
-  async function save() {
-    setBusy(true);
-    setError("");
-    try {
-      const blob = await new Promise<Blob>((resolve, reject) =>
-        canvas.current!.toBlob(
-          (b) =>
-            b ? resolve(b) : reject(new Error("사진을 처리하지 못했어요.")),
-          "image/webp",
-          0.9,
-        ),
-      );
-      const form = new FormData();
-      form.append("photo", blob, "profile.webp");
-      await api(`/api/profiles/${p.id}/photo`, { method: "POST", body: form });
-      await update();
-      setPreview("");
-      announce("프로필 사진을 저장했어요. 다른 기기에도 적용됩니다.");
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
-  async function reset() {
-    setBusy(true);
-    setError("");
-    try {
-      await api(`/api/profiles/${p.id}/photo`, { method: "DELETE" });
-      await update();
-      setPreview("");
-      announce("기본 동물 프로필로 돌아왔어요.");
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
+  const [error, setError] = useState("");
   return (
     <>
       <div className="page-heading">
@@ -1927,7 +1810,7 @@ function ProfilePage({
       <section className="profile-panel">
         <div className="profile-identity">
           <span className="eyebrow">MACAO · OCTOBER 2026</span>
-          <Avatar person={p} photo={profiles[p.id]?.photo} size={132} />
+          <Avatar person={p} size={132} />
           <h2>{p.name}</h2>
           <Pill tone={p.team === "B" ? "clay" : ""}>
             {p.team}팀 · 고정 배정
@@ -1972,76 +1855,11 @@ function ProfilePage({
           <p className="subtle">
             사용자 제공 일정 · 항공권 확인 필요. 이름과 팀은 변경할 수 없습니다.
           </p>
-          <div className="profile-photo-controls">
-            <h3>나를 닮은 사진으로</h3>
-            <p>
-              JPG · PNG · WebP, 최대 5MB. 중앙 정사각형으로 자르고 저장해요.
+          {error && (
+            <p className="error" role="alert">
+              {error}
             </p>
-            <div className="button-row">
-              <label className="primary small file-button">
-                <Camera size={17} />
-                사진 선택
-                <input
-                  aria-label="프로필 사진 선택"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={(e) => choose(e.target.files?.[0])}
-                  disabled={busy}
-                />
-              </label>
-              <button className="outline small" disabled={busy} onClick={reset}>
-                <RotateCcw size={16} />
-                기본 동물로 복원
-              </button>
-            </div>
-            {preview && (
-              <div className="crop-editor">
-                <canvas
-                  ref={canvas}
-                  width={512}
-                  height={512}
-                  aria-label="프로필 사진 중앙 크롭 미리보기"
-                />
-                <label>
-                  사진 확대
-                  <input
-                    type="range"
-                    min="1"
-                    max="3"
-                    step=".05"
-                    value={zoom}
-                    onChange={(e) => setZoom(Number(e.target.value))}
-                  />
-                </label>
-                <div className="button-row">
-                  <button
-                    className="primary small"
-                    disabled={busy}
-                    onClick={save}
-                  >
-                    {busy ? "저장 중…" : "이 사진으로 저장"}
-                    <Check size={16} />
-                  </button>
-                  <button
-                    className="text-button"
-                    disabled={busy}
-                    onClick={() => setPreview("")}
-                  >
-                    취소
-                  </button>
-                </div>
-              </div>
-            )}
-            {error && (
-              <p className="error" role="alert">
-                {error}
-              </p>
-            )}
-            <p className="subtle">
-              사진은 가족 서버에 저장되어 다른 기기에서도 볼 수 있어요. 위치
-              메타데이터는 제거합니다.
-            </p>
-          </div>
+          )}
           <div className="profile-actions">
             <button className="text-button" onClick={onSwitch}>
               <UserRound size={17} />
