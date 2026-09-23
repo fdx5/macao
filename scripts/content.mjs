@@ -1013,7 +1013,7 @@ const travelers = [
   ["taejun", "최태준", "A", "bear", "#e7ddc8"],
   ["juhye", "최주혜", "A", "cat", "#dce4dc"],
   ["taeil", "최태일", "B", "fox", "#efdfd4"],
-  ["haerin", "고해린", "B", "panda", "#dde2e9"],
+  ["haerin", "고혜린", "B", "panda", "#dde2e9"],
 ].map(([id, name, team, animal, color]) => ({
   id,
   name,

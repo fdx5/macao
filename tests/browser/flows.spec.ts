@@ -57,7 +57,7 @@ test("main trip flow, responsive layout, dates, details and profile restoration"
   expect(errors).toEqual([]);
 });
 test("B team return and A team remaining itinerary", async ({ page }) => {
-  await enter(page, "고해린");
+  await enter(page, "고혜린");
   await page.getByRole("tab", { name: /DAY 04/ }).click();
   await expect(
     page.getByRole("heading", { name: "B팀의 마카오 여정은 마무리되었어요." }),
@@ -147,7 +147,7 @@ test("all five travelers can switch and location starts only by button, then sto
     });
   });
   await enter(page, "황미균");
-  for (const name of ["최주혜", "최태일", "고해린", "최태준"]) {
+  for (const name of ["최주혜", "최태일", "고혜린", "최태준"]) {
     await page.locator(".user-button").click();
     await page.getByRole("button", { name: "다른 여행자로 전환" }).click();
     await page
