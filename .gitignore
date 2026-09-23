@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+storage/
+test-results/
+playwright-report/
+*.log
+doc/screenshots/
+doc/shuttle-schedule.jpg

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: our-macao
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24
+      - key: FAMILY_ACCESS_CODE
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SITE_URL
+        sync: false
+      - key: DATA_DIR
+        value: /var/data/macao
+    disk:
+      name: family-profiles
+      mountPath: /var/data
+      sizeGB: 1
