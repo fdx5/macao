@@ -39,6 +39,9 @@ export default function MapView({
     const m = L.map(container.current, {
       scrollWheelZoom: !compact,
       zoomControl: !compact,
+      zoomAnimation: false,
+      fadeAnimation: false,
+      markerZoomAnimation: false,
     }).setView([22.158, 113.553], 13);
     map.current = m;
     L.tileLayer(
@@ -59,6 +62,7 @@ export default function MapView({
     ob.observe(container.current);
     return () => {
       ob.disconnect();
+      m.stop();
       m.remove();
       map.current = null;
       if (watch.current !== null)
@@ -87,7 +91,7 @@ export default function MapView({
     if (local.length)
       map.current.fitBounds(
         L.latLngBounds(local.map((p) => [p.lat, p.lng] as [number, number])),
-        { padding: [35, 35], maxZoom: 15 },
+        { padding: [35, 35], maxZoom: 15, animate: false },
       );
     setSelected(undefined);
   }, [places, compact]);

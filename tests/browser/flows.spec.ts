@@ -1,5 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+test.beforeEach(async ({ page }) => {
+  (page as any).runtimeErrors = [];
+  page.on("pageerror", (error) =>
+    (page as any).runtimeErrors.push(error.message),
+  );
+});
+test.afterEach(async ({ page }) => {
+  expect((page as any).runtimeErrors).toEqual([]);
+});
 async function enter(page: any, person = "최태준") {
   await page.goto("/");
   await expect(page.locator("#code")).toBeVisible();
