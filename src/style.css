@@ -1198,7 +1198,7 @@ select {
   right: 15px;
   width: 15px;
 }
-.food-art > svg:first-of-type {
+.food-art:not(.food-photo) > svg:first-of-type {
   margin-top: -15px;
   opacity: 0.7;
 }
@@ -3219,7 +3219,7 @@ details a {
     left: calc(50% - 41.5px);
     top: 20px;
   }
-  .food-art > svg:first-of-type {
+  .food-art:not(.food-photo) > svg:first-of-type {
     width: 31px;
     margin-top: -14px;
   }
@@ -4012,4 +4012,41 @@ body {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Restaurant photographs sit behind the banner labels at every breakpoint. */
+.food-card .food-photo {
+  color: #fff;
+  background: #354438;
+  isolation: isolate;
+}
+.food-photo > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.food-card .food-photo::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  opacity: 1;
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 40%),
+    transparent 40%,
+    rgb(0 0 0 / 66%)
+  );
+  z-index: -1;
+}
+.food-card .food-photo::after {
+  content: none;
+}
+.food-photo .food-no,
+.food-photo .food-cuisine {
+  text-shadow: 0 1px 4px rgb(0 0 0 / 55%);
 }

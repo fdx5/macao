@@ -55,7 +55,7 @@ server/index.mjs      Express API, 접근 보호
 data/trip.json        버전 관리되는 한국어 여행 콘텐츠
 scripts/content.mjs   콘텐츠 원본·JSON 생성기
 scripts/assets.mjs    WebP, 아이콘, 공유 이미지 생성
-assets/source/        라이선스가 확인된 사진 원본
+assets/source/        사진 원본 및 출처 기록
 public/               공개 이미지·아이콘
 storage/              로컬 접근코드·실행 로그 (Git 제외)
 tests/                시간·팀·서버 통합 및 브라우저 검증
@@ -101,7 +101,8 @@ Leaflet은 지도 라이브러리이며 타일 서비스와 다릅니다. 기본
 - 베네시안: soeperbaby, [원본](https://commons.wikimedia.org/wiki/File:The_Venetian_Macao_Night_View_201104.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)
 - 세나도: Pauloleong2002, [원본](https://commons.wikimedia.org/wiki/File:Evening_at_Senado_Square.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - 두 이미지 모두 크롭·압축·화면 오버레이. 세나도 수정 이미지도 CC BY-SA 4.0. 실제 촬영 이미지지만 현재 모습을 보장하지 않습니다.
-- 식당 사진 재사용 허가를 확인하지 못해 복제하지 않고 공식 사진 갤러리로 연결합니다. 이미지처럼 보이는 식사 카드는 전용 벡터 일러스트입니다.
+- 식사 배너와 상세 화면은 음식점 공식 소개 사진을 사용합니다. Sands Resorts Macao·Taipa Village·마카오 경제기술발전국(DSEDT)의 원본 URL, 소개 페이지, 확인일은 `assets/source/restaurants/sources.json`에 기록했습니다. 사진 권리는 각 원저작자에게 있으며 별도 재사용 라이선스가 확인된 사진으로 분류하지 않습니다. WebP로 최적화해 로컬 제공하며 화면 비율에 맞게 크롭·오버레이합니다.
+- 10/14 A팀은 콜로안 16:00 출발 → 안토니오 17:00 저녁 → 18:15 공연장 이동 → 19:00 입장 준비 → 19:30 하우스 오브 댄싱 워터 → 21:00 이후 호텔 복귀입니다. 공연 시작은 사용자 제공 시간이며 회차·좌석·티켓 확인이 필요합니다. 관람 90분은 계획상 확보 시간이며 공연 티켓·추가 교통비는 별도입니다.
 - OG PNG는 한글 폰트를 확인한 환경에서 생성해 커밋합니다. Linux의 한글 폰트 유무에 영향을 받지 않도록 기존 PNG는 보존합니다. 다시 만들려면 한글 폰트가 있는 환경에서 `node scripts/assets.mjs --regenerate-og`를 실행하세요.
 
 ## 검증

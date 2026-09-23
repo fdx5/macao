@@ -1,6 +1,21 @@
 import sharp from "sharp";
 import { mkdir, writeFile, copyFile, access } from "node:fs/promises";
 await mkdir("public/images", { recursive: true });
+const restaurants = [
+  "north",
+  "pin",
+  "jiang",
+  "buffet",
+  "famiglia",
+  "antonio",
+  "wong",
+];
+await mkdir("public/images/restaurants", { recursive: true });
+for (const name of restaurants)
+  await sharp(`assets/source/restaurants/${name}.jpg`)
+    .resize({ width: 1000, withoutEnlargement: true })
+    .webp({ quality: 84 })
+    .toFile(`public/images/restaurants/${name}.webp`);
 for (const name of ["venetian", "senado"])
   await sharp(`assets/source/${name}.jpg`)
     .resize({ width: 1600, withoutEnlargement: true })
@@ -52,6 +67,12 @@ await writeFile(
 );
 // Vite copies public before this postbuild step; synchronize generated assets.
 await mkdir("dist/images", { recursive: true });
+await mkdir("dist/images/restaurants", { recursive: true });
+for (const name of restaurants)
+  await copyFile(
+    `public/images/restaurants/${name}.webp`,
+    `dist/images/restaurants/${name}.webp`,
+  );
 for (const name of ["venetian", "senado"])
   await copyFile(`public/images/${name}.webp`, `dist/images/${name}.webp`);
 for (const file of [

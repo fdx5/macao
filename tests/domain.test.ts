@@ -29,6 +29,27 @@ test("five immutable travelers and correct team split", () => {
     b.filter((e) => new Date(e.startAt) < new Date("2026-10-14T12:30+08:00")),
   );
 });
+test("A team reaches the October 14 show after dinner and admission time", () => {
+  const events = dayEvents(trip.events, 3, "A");
+  const show = events.find((e) => e.title === "하우스 오브 댄싱 워터")!;
+  assert.equal(show.startAt, "2026-10-14T19:30:00+08:00");
+  assert.equal(show.cost.people, 3);
+  assert(show.reservationRequired);
+  assert(
+    !dayEvents(trip.events, 3, "B").some((e) => e.placeId === show.placeId),
+  );
+  const dinner = events.find((e) => e.placeId === "antonio")!;
+  assert.equal(dinner.startAt, "2026-10-14T17:00:00+08:00");
+  assert.equal((+new Date(show.startAt) - +new Date(dinner.endAt)) / 60000, 75);
+  const admission = events[events.indexOf(show) - 1];
+  assert.equal(admission.placeId, show.placeId);
+  assert.equal(
+    (+new Date(admission.endAt) - +new Date(admission.startAt)) / 60000,
+    30,
+  );
+  assert.equal(events.at(-1)!.placeId, "venetian");
+});
+
 test("explicit time zones, boundary states, no inferred visit completion", () => {
   const t = new Date("2026-10-11T16:30:00Z");
   assert.equal(macauDate(t), "2026-10-12");

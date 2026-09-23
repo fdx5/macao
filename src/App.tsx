@@ -933,7 +933,9 @@ export default function App() {
                         ? "첫날은 객실에서 90분 쉬어가요. 늦은 점심을 먹고, 도시가 빛날 때 다시 나서면 돼요."
                         : day === 2
                           ? "오후에는 수영과 휴식을 위해 3시간 이상 비워두었어요. 하고 싶은 만큼만 즐겨요."
-                          : "오늘은 짐과 마음에 여유를 남겨요. 공항 가는 시간은 넉넉하게 확보했어요."}
+                          : day === 3 && shownTeam === "A"
+                            ? "콜로안에서 쉬어가고, 17시에 이른 저녁을 먹어요. 19시에는 공연장에 도착해 마지막 밤을 준비해요."
+                            : "오늘은 짐과 마음에 여유를 남겨요. 공항 가는 시간은 넉넉하게 확보했어요."}
                     </p>
                     <span className="slow-flower">✳</span>
                   </div>
@@ -973,9 +975,14 @@ export default function App() {
                         key={p.id}
                         onClick={() => setSelected(p)}
                       >
-                        <div className="food-art">
+                        <div className="food-art food-photo">
+                          <img
+                            src={img(p.image)}
+                            alt={`${p.name} 대표 사진`}
+                            loading="lazy"
+                            decoding="async"
+                          />
                           <span className="food-no">TABLE / 0{i + 1}</span>
-                          <Utensils size={42} strokeWidth={1} />
                           <span className="food-cuisine">{p.english}</span>
                           <ArrowUpRight size={19} />
                         </div>
@@ -1228,9 +1235,11 @@ function EventCard({
           <Photo
             name={p.image}
             alt={
-              p.id === "senado"
-                ? "세나도 광장 참고 사진"
-                : "베네시안 마카오 여행 참고 사진"
+              p.category === "식사"
+                ? `${p.name} 대표 사진`
+                : p.id === "senado"
+                  ? "세나도 광장 참고 사진"
+                  : "베네시안 마카오 여행 참고 사진"
             }
           />
         </div>
@@ -1278,11 +1287,13 @@ function PlaceDetail({
             }
           />
           <span>
-            {p.id === "senado"
-              ? "세나도 광장"
-              : p.id === "venetian"
-                ? "베네시안 마카오"
-                : "여행 분위기 참고 사진 · 베네시안"}
+            {p.category === "식사"
+              ? `${p.name} · 공식 소개 사진`
+              : p.id === "senado"
+                ? "세나도 광장"
+                : p.id === "venetian"
+                  ? "베네시안 마카오"
+                  : "여행 분위기 참고 사진 · 베네시안"}
           </span>
         </div>
       ) : (

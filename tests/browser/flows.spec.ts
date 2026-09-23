@@ -56,6 +56,49 @@ test("main trip flow, responsive layout, dates, details and profile restoration"
   await expect(page.getByRole("heading", { name: /최태준님/ })).toBeVisible();
   expect(errors).toEqual([]);
 });
+test("restaurant photo banners load and A team show is visible on day three", async ({
+  page,
+}, info) => {
+  await enter(page);
+  for (const day of [1, 2, 3, 4]) {
+    await page.getByRole("tab", { name: new RegExp(`DAY 0${day}`) }).click();
+    const photos = page.locator(".food-photo img");
+    expect(await photos.count()).toBeGreaterThan(0);
+    for (const photo of await photos.all()) {
+      await photo.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() => photo.evaluate((el: HTMLImageElement) => el.naturalWidth))
+        .toBeGreaterThan(0);
+    }
+  }
+  await page.getByRole("tab", { name: /DAY 03/ }).click();
+  await expect(
+    page.getByRole("button", { name: "하우스 오브 댄싱 워터", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator(".event-row")
+      .filter({
+        has: page.getByRole("button", {
+          name: "하우스 오브 댄싱 워터",
+          exact: true,
+        }),
+      }),
+  ).toContainText("19:30");
+  await page.locator(".food-section").screenshot({
+    path: `test-results/${info.project.name}-restaurant-banners.png`,
+  });
+  await page
+    .getByRole("button", { name: "하우스 오브 댄싱 워터", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText("Dancing Water Theater");
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+});
+
 test("B team return and A team remaining itinerary", async ({ page }) => {
   await enter(page, "고혜린");
   await page.getByRole("tab", { name: /DAY 04/ }).click();

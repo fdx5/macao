@@ -1,0 +1,44 @@
+{
+  "north": {
+    "imageUrl": "https://assets.sandsresortsmacao.cn/content/venetianmacao/dining/2020/North/mobile/north-dishes_660x600-7.jpg",
+    "pageUrl": "https://www.venetianmacao.com/restaurants/north.html",
+    "retrievedAt": "2026-09-24",
+    "credit": "Sands Resorts Macao"
+  },
+  "pin": {
+    "imageUrl": "https://assets.sandsresortsmacao.cn/content/venetianmacao/restaurants/pin-yue-xuan/pin-yue-xuan_featured-dishes_660x600_1.jpg",
+    "pageUrl": "https://www.venetianmacao.com/restaurants/pin-yue-xuan.html",
+    "retrievedAt": "2026-09-24",
+    "credit": "Sands Resorts Macao"
+  },
+  "jiang": {
+    "imageUrl": "https://assets.sandsresortsmacao.cn/content/venetianmacao/dining/2020/jiang-nan/jiang-nan_pc-banner_2000x666.jpg",
+    "pageUrl": "https://www.venetianmacao.com/restaurants/jiang-nan.html",
+    "retrievedAt": "2026-09-24",
+    "credit": "Sands Resorts Macao"
+  },
+  "buffet": {
+    "imageUrl": "https://assets.sandsresortsmacao.cn/content/parisianmacao/dining/2020/le-buffet/le-buffet_dishes_740x615.jpg",
+    "pageUrl": "https://www.parisianmacao.com/restaurants/le-buffet.html",
+    "retrievedAt": "2026-09-24",
+    "credit": "Sands Resorts Macao"
+  },
+  "famiglia": {
+    "imageUrl": "https://www.taipavillagemacau.com/wp-content/uploads/2017/08/2019-391-scaled.jpg",
+    "pageUrl": "https://www.taipavillagemacau.com/directory/la-famiglia/",
+    "retrievedAt": "2026-09-24",
+    "credit": "Taipa Village"
+  },
+  "antonio": {
+    "imageUrl": "https://www.taipavillagemacau.com/wp-content/uploads/2024/05/dishes.jpg",
+    "pageUrl": "https://www.taipavillagemacau.com/directory/antonio/",
+    "retrievedAt": "2026-09-24",
+    "credit": "Taipa Village"
+  },
+  "wong": {
+    "imageUrl": "https://www.dsedt.gov.mo/lcp/images/store_photo/3/01.jpg",
+    "pageUrl": "https://www.dsedt.gov.mo/lcp/pt_PT/store_detail.jsp?id=3",
+    "retrievedAt": "2026-09-24",
+    "credit": "Macao DSEDT"
+  }
+}
