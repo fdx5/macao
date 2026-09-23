@@ -18,9 +18,9 @@ for (const [name, width, height] of [
   await page.screenshot({ path: `doc/screenshots/${name}-welcome.png` });
   await page.locator("#code").fill(code);
   await page.getByRole("button", { name: "여행 시작하기" }).click();
-  await page.getByRole("button", { name: /최태준.*A팀/ }).waitFor();
+  await page.getByRole("button", { name: /최태준.*의정부팀/ }).waitFor();
   await page.screenshot({ path: `doc/screenshots/${name}-travelers.png` });
-  await page.getByRole("button", { name: /최태준.*A팀/ }).click();
+  await page.getByRole("button", { name: /최태준.*의정부팀/ }).click();
   await page.locator(".hero").waitFor();
   await page.evaluate(() => document.fonts.ready);
   await page.locator(".hero img").evaluate((img) => img.decode());

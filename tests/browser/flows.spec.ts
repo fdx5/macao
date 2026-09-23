@@ -16,7 +16,9 @@ async function enter(page: any, person = "최태준") {
   await page.locator("#code").fill(code);
   await page.getByRole("button", { name: "여행 시작하기" }).click();
   await page
-    .getByRole("button", { name: new RegExp(`${person}.*A팀|${person}.*B팀`) })
+    .getByRole("button", {
+      name: new RegExp(`${person}.*의정부팀|${person}.*울산팀`),
+    })
     .click();
   await expect(
     page.getByRole("heading", { name: new RegExp(person + "님") }),
@@ -76,14 +78,12 @@ test("restaurant photo banners load and A team show is visible on day three", as
     page.getByRole("button", { name: "하우스 오브 댄싱 워터", exact: true }),
   ).toBeVisible();
   await expect(
-    page
-      .locator(".event-row")
-      .filter({
-        has: page.getByRole("button", {
-          name: "하우스 오브 댄싱 워터",
-          exact: true,
-        }),
+    page.locator(".event-row").filter({
+      has: page.getByRole("button", {
+        name: "하우스 오브 댄싱 워터",
+        exact: true,
       }),
+    }),
   ).toContainText("19:30");
   await page.locator(".food-section").screenshot({
     path: `test-results/${info.project.name}-restaurant-banners.png`,
@@ -103,9 +103,11 @@ test("B team return and A team remaining itinerary", async ({ page }) => {
   await enter(page, "고혜린");
   await page.getByRole("tab", { name: /DAY 04/ }).click();
   await expect(
-    page.getByRole("heading", { name: "B팀의 마카오 여정은 마무리되었어요." }),
+    page.getByRole("heading", {
+      name: "울산팀의 마카오 여정은 마무리되었어요.",
+    }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "A팀의 남은 하루 보기" }).click();
+  await page.getByRole("button", { name: "의정부팀의 남은 하루 보기" }).click();
   await expect(
     page.getByRole("button", { name: "추억을 안고, 인천으로" }),
   ).toBeVisible();

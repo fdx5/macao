@@ -1,4 +1,8 @@
 import type { Event, Team } from "./types";
+export const TEAM_NAMES: Record<Team, string> = {
+  A: "의정부팀",
+  B: "울산팀",
+};
 export const TRIP_START = "2026-10-12T00:00:00+08:00";
 export function macauDate(now: Date) {
   return new Intl.DateTimeFormat("en-CA", {

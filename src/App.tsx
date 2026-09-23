@@ -44,6 +44,7 @@ import {
 } from "lucide-react";
 import type { Trip, Traveler, Place, Team, Event } from "./types";
 import {
+  TEAM_NAMES,
   clock,
   macauDate,
   daysUntil,
@@ -87,7 +88,7 @@ const days = [
     date: "10.14",
     week: "수",
     title: "함께, 또 각자의 속도로",
-    sub: "B팀 귀국 · A팀 콜로안",
+    sub: "울산팀 귀국 · 의정부팀 콜로안",
     image: "venetian",
   },
   {
@@ -95,7 +96,7 @@ const days = [
     date: "10.15",
     week: "목",
     title: "추억을 가방에 담아",
-    sub: "마지막 아침 · A팀 귀국",
+    sub: "마지막 아침 · 의정부팀 귀국",
     image: "senado",
   },
 ];
@@ -387,7 +388,7 @@ export default function App() {
                       <Avatar person={p} size={72} />
                       <strong>{p.name}</strong>
                       <Pill tone={p.team === "B" ? "clay" : ""}>
-                        {p.team}팀
+                        {TEAM_NAMES[p.team]}
                       </Pill>
                     </button>
                   ))}
@@ -511,7 +512,7 @@ export default function App() {
             <Avatar person={traveler} size={36} />
             <span>
               {traveler.name}
-              <small>{team}팀 여행자</small>
+              <small>{TEAM_NAMES[team]} 여행자</small>
             </span>
             <ChevronRight size={15} />
           </button>
@@ -696,8 +697,8 @@ export default function App() {
                         <small>OUR HOME IN MACAO</small>
                         <strong>베네시안 마카오</strong>
                         <span>
-                          {team === "A" ? "3박 4일" : "2박 3일"} · {team}팀{" "}
-                          {team === "A" ? "3" : "2"}명
+                          {team === "A" ? "3박 4일" : "2박 3일"} ·{" "}
+                          {TEAM_NAMES[team]} {team === "A" ? "3" : "2"}명
                         </span>
                       </div>
                       <div className="hotel-symbol">♧</div>
@@ -806,14 +807,14 @@ export default function App() {
                     </div>
                     <Pill tone={shownTeam === "B" ? "clay" : ""}>
                       {day < 3
-                        ? "A + B 함께 · 5명"
-                        : `${shownTeam}팀 · ${shownTeam === "A" ? 3 : 2}명`}
+                        ? "의정부팀 + 울산팀 함께 · 5명"
+                        : `${TEAM_NAMES[shownTeam]} · ${shownTeam === "A" ? 3 : 2}명`}
                     </Pill>
                   </div>
                   {team === "B" && day === 4 && !viewA ? (
                     <div className="empty-state">
                       <Plane size={38} />
-                      <h3>B팀의 마카오 여정은 마무리되었어요.</h3>
+                      <h3>울산팀의 마카오 여정은 마무리되었어요.</h3>
                       <p>
                         10월 14일 인천 22:45 도착 예정 기준입니다.
                         <br />
@@ -823,7 +824,7 @@ export default function App() {
                         className="primary"
                         onClick={() => setViewA(true)}
                       >
-                        A팀의 남은 하루 보기 <ArrowRight size={17} />
+                        의정부팀의 남은 하루 보기 <ArrowRight size={17} />
                       </button>
                     </div>
                   ) : (
@@ -959,7 +960,7 @@ export default function App() {
                   </div>
                   <span className="subtle">
                     {day >= 3 && shownTeam === "A"
-                      ? "A팀 3인 기준"
+                      ? "의정부팀 3인 기준"
                       : "공동 일정 5인 기준"}{" "}
                     · 자체 예산
                   </span>
@@ -1028,7 +1029,7 @@ export default function App() {
                 <p>장소를 눌러 살펴보고, 지금 있는 곳에서 길을 찾아요.</p>
               </div>
               <Pill>
-                {traveler.name} · {team}팀
+                {traveler.name} · {TEAM_NAMES[team]}
               </Pill>
             </div>
             <DayTabs day={day} onChange={chooseDay} />
@@ -1043,7 +1044,7 @@ export default function App() {
                     ? "내 일정"
                     : t === "all"
                       ? "가족 전체"
-                      : `${t}팀`}
+                      : TEAM_NAMES[t]}
                 </button>
               ))}
             </div>
@@ -1179,7 +1180,7 @@ function EventCard({
           <span>{e.category}</span>
           {e.teamIds.length === 1 && (
             <Pill tone={e.teamIds[0] === "B" ? "clay" : ""}>
-              {e.teamIds[0]}팀
+              {TEAM_NAMES[e.teamIds[0]]}
             </Pill>
           )}
           {isCurrent && <Pill>현재 예정 시간</Pill>}
@@ -1494,7 +1495,7 @@ function InfoPage({
           <h1>마음 가볍게, 떠날 준비.</h1>
           <p>챙길 것부터 돌아오는 길까지. 필요한 정보를 한곳에 모았어요.</p>
         </div>
-        <Pill>{team}팀 안내</Pill>
+        <Pill>{TEAM_NAMES[team]} 안내</Pill>
       </div>
       <div className="info-grid">
         <section className="panel checklist">
@@ -1537,7 +1538,9 @@ function InfoPage({
             .map((f) => (
               <div className="flight-row" key={f.id}>
                 <div>
-                  <Pill>{f.id === "out" ? "함께 출국" : `${team}팀 귀국`}</Pill>
+                  <Pill>
+                    {f.id === "out" ? "함께 출국" : `${TEAM_NAMES[team]} 귀국`}
+                  </Pill>
                   <span>{f.departure.slice(0, 10).replaceAll("-", ".")} </span>
                 </div>
                 <div className="flight-times">
@@ -1587,7 +1590,7 @@ function InfoPage({
               <strong>10.12 월 · 15:00</strong>
             </div>
             <div>
-              <small>CHECK OUT · {team}팀</small>
+              <small>CHECK OUT · {TEAM_NAMES[team]}</small>
               <strong>10.{team === "A" ? "15 목" : "14 수"} · 11:00</strong>
             </div>
           </div>
@@ -1824,7 +1827,7 @@ function ProfilePage({
           <Avatar person={p} size={132} />
           <h2>{p.name}</h2>
           <Pill tone={p.team === "B" ? "clay" : ""}>
-            {p.team}팀 · 고정 배정
+            {TEAM_NAMES[p.team]} · 고정 배정
           </Pill>
           <span className="passport-stamp">
             OUR FAMILY
