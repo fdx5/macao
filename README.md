@@ -82,7 +82,7 @@ render.yaml           Render 단일 인스턴스 + 영속 디스크
 | `DATA_DIR`           | `/var/data/macao`                                                    |
 | `PORT`               | Render 제공값 사용                                                   |
 
-4. Build: `npm ci && npm run build`, Start: `npm start`, Health check: `/api/health`.
+4. Build: `npm ci --include=dev && npm run build`, Start: `npm start`, Health check: `/api/health`.
 5. 디스크 마운트가 `/var/data`인지 확인합니다. 사진과 JSON은 그 하위에만 저장됩니다.
 6. 배포 후 로그인·사진 저장·다른 브라우저의 같은 여행자·서비스 재시작 후 사진 복원을 확인합니다.
 7. 페이지 원문의 `og:url`, `og:image`가 실제 절대 URL인지, `/og.png`가 로그인 없이 HTTP 200인지 확인합니다.
